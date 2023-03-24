@@ -1,0 +1,27 @@
+service: golang
+
+provider:
+  name: google
+  runtime: go116
+  project: bitbucket-webhook-lambda
+  credentials: application_default_credentials.json
+
+frameworkVersion: '3'
+
+plugins:
+  - serverless-google-cloudfunctions
+
+package:
+  exclude:
+    - .gitignore
+    - .git/**
+
+functions:
+  first:
+    handler: WebhookHandler
+    events:
+      - http: path
+    secrets:
+      BITBUCKET_PASSWORD:
+        secret: BITBUCKET_PASSWORD
+        version: latest

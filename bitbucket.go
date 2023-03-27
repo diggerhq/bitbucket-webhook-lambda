@@ -472,16 +472,19 @@ var requestBody = `{
 }`
 
 func TriggerPipeline(pipelineName string) {
+	bitbucketUsername := os.Getenv("BITBUCKET_USERNAME")
+	bitbucketOwner := os.Getenv("BITBUCKET_REPO_OWNER")
+	bitbucketRepoSlug := os.Getenv("BITBUCKET_REPO_SLUG")
 
-	c := bitbucket.NewBasicAuth("alexey-digger", os.Getenv("BITBUCKET_PASSWORD"))
+	c := bitbucket.NewBasicAuth(bitbucketUsername, os.Getenv("BITBUCKET_PASSWORD"))
 
 	if os.Getenv("BITBUCKET_PASSWORD") != "" {
 		fmt.Printf("BITBUCKET_PASSWORD value found\n")
 	}
 
 	opt := &bitbucket.PipelinesOptions{
-		Owner:    "alexey-digger",
-		RepoSlug: "digger-demo",
+		Owner:    bitbucketOwner,
+		RepoSlug: bitbucketRepoSlug,
 	}
 
 	var bitbucketTrigerPipelineRequestBody bitbucket.BitbucketTrigerPipelineRequestBody

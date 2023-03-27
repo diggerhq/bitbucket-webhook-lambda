@@ -3,8 +3,8 @@ service: golang
 provider:
   name: google
   runtime: go116
-  project: bitbucket-webhook-lambda
-  credentials: application_default_credentials.json
+  project: ${env:GOOGLE_PROJECT_NAME}
+  credentials: ${env:GOOGLE_CREDENTIALS_JSON_FILE}
 
 frameworkVersion: '3'
 
@@ -17,7 +17,7 @@ package:
     - .git/**
 
 functions:
-  first:
+  bitbucket-webhook-handler:
     handler: WebhookHandler
     events:
       - http: path

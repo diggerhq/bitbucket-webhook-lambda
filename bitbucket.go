@@ -478,12 +478,12 @@ func TriggerPipeline(pipelineName string) {
 	}
 
 	var bitbucketTriggerPipelineRequestBody bitbucket.BitbucketTrigerPipelineRequestBody
-	bitbucketTriggerPipelineRequestBody.Target.Selector.Pattern = pipelineName
 
 	err := json.Unmarshal([]byte(requestBody), &bitbucketTriggerPipelineRequestBody)
 	if err != nil {
 		fmt.Printf("error parsing BitbucketTrigerPipelineRequestBody: %v\n", err)
 	}
+	bitbucketTriggerPipelineRequestBody.Target.Selector.Pattern = pipelineName
 
 	_, err = c.Repositories.Pipelines.TriggerPipeline(opt, &bitbucketTriggerPipelineRequestBody)
 	if err != nil {

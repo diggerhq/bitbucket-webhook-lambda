@@ -457,16 +457,6 @@ var requestBody = `{
     {
       "key": "DEPLOYMENT_VARIABLE",
       "value": "us-west-1"
-    },
-    {
-      "key": "AWS_ACCESS_KEY_ID",
-      "value": "$AWS_ACCESS_KEY_ID",
-      "secured": true
-    },
-    {
-      "key": "AWS_SECRET_ACCESS_KEY",
-      "value": "$AWS_SECRET_ACCESS_KEY",
-      "secured": true
     }
   ]
 }`
@@ -487,15 +477,15 @@ func TriggerPipeline(pipelineName string) {
 		RepoSlug: bitbucketRepoSlug,
 	}
 
-	var bitbucketTrigerPipelineRequestBody bitbucket.BitbucketTrigerPipelineRequestBody
-	bitbucketTrigerPipelineRequestBody.Target.Selector.Pattern = pipelineName
+	var bitbucketTriggerPipelineRequestBody bitbucket.BitbucketTrigerPipelineRequestBody
+	bitbucketTriggerPipelineRequestBody.Target.Selector.Pattern = pipelineName
 
-	err := json.Unmarshal([]byte(requestBody), &bitbucketTrigerPipelineRequestBody)
+	err := json.Unmarshal([]byte(requestBody), &bitbucketTriggerPipelineRequestBody)
 	if err != nil {
 		fmt.Printf("error parsing BitbucketTrigerPipelineRequestBody: %v\n", err)
 	}
 
-	_, err = c.Repositories.Pipelines.TriggerPipeline(opt, &bitbucketTrigerPipelineRequestBody)
+	_, err = c.Repositories.Pipelines.TriggerPipeline(opt, &bitbucketTriggerPipelineRequestBody)
 	if err != nil {
 		println(err.Error())
 	}

@@ -1,6 +1,15 @@
 service: golang
 
+
+custom:
+  scripts:
+    commands:
+      make-public: gcloud functions add-iam-policy-binding ${self:service}-dev-bitbucket-webhook-handler --member="allUsers" --role="roles/cloudfunctions.invoker" --project=${self:provider.project} --region=${self:provider.region} | xargs echo
+    hooks:
+      'after:deploy:deploy': npx sls make-public --function=bitbucket-webhook-handler
+
 provider:
+  region: us-central1
   name: google
   runtime: go116
   project: ${env:GOOGLE_PROJECT_NAME}
@@ -22,6 +31,8 @@ functions:
     events:
       - http: path
     environment:
+      BITBUCKET_USERNAME:
+        ${env:BITBUCKET_USERNAME}
       BITBUCKET_REPO_OWNER:
         ${env:BITBUCKET_REPO_OWNER}
       BITBUCKET_REPO_SLUG:

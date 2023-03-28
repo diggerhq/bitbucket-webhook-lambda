@@ -70,5 +70,6 @@ func TestBitbucketUnknownEvent(t *testing.T) {
 }
 
 func TestBitbucketTrigger(t *testing.T) {
-	TriggerPipeline("terraform_plan")
+	err := TriggerPipeline("terraform_plan")
+	assert.NoError(t, err)
 }

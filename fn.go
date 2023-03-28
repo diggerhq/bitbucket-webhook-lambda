@@ -38,17 +38,28 @@ func WebhookHandler(w http.ResponseWriter, r *http.Request) {
 		err := json.Unmarshal(bodyBytes, &pullRequestCommentCreated)
 		if err != nil {
 			fmt.Fprintf(w, "error parsing pullrequest:comment_created event: %v", err)
+			log.Printf("error parsing pullrequest:comment_created event: %v", err)
 		}
 		rawComment := pullRequestCommentCreated.Comment.Content.Raw
+		log.Printf("rawComment: %s", rawComment)
 		if strings.HasPrefix(strings.TrimSpace(rawComment), "digger plan") {
-			fmt.Fprintf(w, "rawComment: %s", rawComment)
-			TriggerPipeline("terraform_plan")
+			log.Print("digger plan")
+			err = TriggerPipeline("terraform_plan")
+			if err != nil {
+				log.Printf("error %s", err.Error())
+				fmt.Fprintf(w, "error %s", err.Error())
+				return
+			}
 		}
 		if strings.HasPrefix(strings.TrimSpace(rawComment), "digger apply") {
-			fmt.Fprintf(w, "rawComment: %s", rawComment)
-			TriggerPipeline("terraform_apply")
+			log.Print("digger plan")
+			err = TriggerPipeline("terraform_apply")
+			if err != nil {
+				log.Printf("error %s", err.Error())
+				fmt.Fprintf(w, "error %s", err.Error())
+				return
+			}
 		}
-		fmt.Fprint(w, "pullrequest:comment_created")
 		return
 	case "pullrequest:created":
 		err := json.Unmarshal(bodyBytes, &pullRequestCreated)

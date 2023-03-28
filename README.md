@@ -8,4 +8,11 @@ Feel free to use it for your usecases and if you find it useful consider contrib
 ## How to deploy
 ```
 GOOGLE_PROJECT_NAME=<gcp project name> GOOGLE_CREDENTIALS_JSON_FILE=<path to application_default_credentials.json> serverless deploy --stage prod
+
+```
+
+
+allow unauthenticated requests
+``` 
+gcloud functions add-iam-policy-binding <functio name> --member="allUsers" --role="roles/cloudfunctions.invoker" --project=<project name> --region=us-central1
 ```

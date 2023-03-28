@@ -2,6 +2,7 @@ package lambda
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/diggerhq/go-bitbucket"
 	"os"
@@ -461,16 +462,25 @@ var requestBody = `{
   ]
 }`
 
-func TriggerPipeline(pipelineName string) {
+func TriggerPipeline(pipelineName string) error {
 	bitbucketUsername := os.Getenv("BITBUCKET_USERNAME")
-	bitbucketOwner := os.Getenv("BITBUCKET_REPO_OWNER")
-	bitbucketRepoSlug := os.Getenv("BITBUCKET_REPO_SLUG")
-
-	c := bitbucket.NewBasicAuth(bitbucketUsername, os.Getenv("BITBUCKET_PASSWORD"))
-
-	if os.Getenv("BITBUCKET_PASSWORD") != "" {
-		fmt.Printf("BITBUCKET_PASSWORD value found\n")
+	if bitbucketUsername == "" {
+		return errors.New("BITBUCKET_USERNAME is empty\n")
 	}
+	bitbucketOwner := os.Getenv("BITBUCKET_REPO_OWNER")
+	if bitbucketOwner == "" {
+		return errors.New("BITBUCKET_REPO_OWNER is empty\n")
+	}
+	bitbucketRepoSlug := os.Getenv("BITBUCKET_REPO_SLUG")
+	if bitbucketRepoSlug == "" {
+		return errors.New("BITBUCKET_REPO_SLUG is empty\n")
+	}
+	bitbucketPassword := os.Getenv("BITBUCKET_PASSWORD")
+	if bitbucketPassword == "" {
+		return errors.New("BITBUCKET_PASSWORD is empty\n")
+	}
+
+	c := bitbucket.NewBasicAuth(bitbucketUsername, bitbucketPassword)
 
 	opt := &bitbucket.PipelinesOptions{
 		Owner:    bitbucketOwner,
@@ -487,6 +497,7 @@ func TriggerPipeline(pipelineName string) {
 
 	_, err = c.Repositories.Pipelines.TriggerPipeline(opt, &bitbucketTriggerPipelineRequestBody)
 	if err != nil {
-		println(err.Error())
+		fmt.Printf("failed to trigger pipeline: %v\n", err)
 	}
+	return nil
 }

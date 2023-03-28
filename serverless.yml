@@ -21,6 +21,11 @@ functions:
     handler: WebhookHandler
     events:
       - http: path
+    environment:
+      BITBUCKET_REPO_OWNER:
+        ${env:BITBUCKET_REPO_OWNER}
+      BITBUCKET_REPO_SLUG:
+        ${env:BITBUCKET_REPO_SLUG}
     secrets:
       BITBUCKET_PASSWORD:
         secret: BITBUCKET_PASSWORD
